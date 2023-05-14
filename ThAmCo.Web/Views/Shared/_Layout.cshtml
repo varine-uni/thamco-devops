@@ -26,10 +26,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Claims">Debug Claims</a>
                             </li>
-                            @if (true)
+                            @if (User.IsInRole("Manager"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="UserManager" asp-action="ManageUser">Manage</a>
+                                    <a class="nav-link text-dark" asp-controller="ManageUser" asp-action="ManageUser">Manage</a>
                                 </li>
                             }
                             <li class="nav-item">
