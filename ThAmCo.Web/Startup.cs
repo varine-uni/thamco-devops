@@ -30,8 +30,8 @@ namespace ThAmCo.Web
             services.AddDbContext<MainContext>(options
                 => options.UseSqlite(Configuration.GetConnectionString("DevDbConnection")));
             services.AddAuth0WebAppAuthentication(options => {
-                options.Domain = "dev-mzcj314smll0subb.us.auth0.com";
-                options.ClientId = "NWLQ47GJPEvaBy58Ps4O1LWBY0B7KdHZ";
+                options.Domain = Configuration["Auth0:Domain"]; ;
+                options.ClientId = Configuration["Auth0:ClientId"]; ;
             });
         }
 
