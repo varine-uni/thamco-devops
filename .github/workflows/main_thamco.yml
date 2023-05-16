@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build, Test, and Deploy ASP.Net Core app to Azure Web App - thamco
 
 on:
@@ -10,11 +7,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  test:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
@@ -25,38 +49,28 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Build and run tests
+        run: |
+          dotnet test --configuration Release --no-restore --verbosity normal
+          test_result=$?
 
-      - name: Run tests
-        run: dotnet test --configuration Release --logger "trx;LogFileName=testresults.trx"
-
-      - name: Publish test artifacts
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ThAmCo.Tests
-
-      - name: Upload test artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: ${{env.DOTNET_ROOT}}/ThAmCo.Tests
+          if [ $test_result -ne 0 ]; then
+            echo "Tests failed. Skipping deployment."
+            exit $test_result
+          fi
 
   deploy:
     runs-on: windows-latest
-    needs: build-and-test
+    needs: [build, test]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download app artifact from build job
+      - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-
-      - name: Download test artifact from build-and-test job
-        uses: actions/download-artifact@v2
-        with:
-          name: test-results
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -66,8 +80,3 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4CECDC469E8240FCA7D0F046672CA053 }}
           package: .
-
-      - name: Publish test results
-        uses: mike-ward/publish-test-results-action@v2
-        with:
-          test-results-file: '**/testresults.trx'
