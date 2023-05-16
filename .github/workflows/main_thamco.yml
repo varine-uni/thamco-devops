@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - thamco
+name: Build, Test, and Deploy ASP.Net Core app to Azure Web App - thamco
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
 
     steps:
@@ -22,30 +22,41 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      - name: Restore dependencies
+        run: dotnet restore
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      - name: Run tests
+        run: dotnet test --configuration Release --logger "trx;LogFileName=testresults.trx"
 
-      - name: Upload artifact for deployment job
+      - name: Publish test artifacts
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/ThAmCo.Tests
+
+      - name: Upload test artifact
         uses: actions/upload-artifact@v2
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: test-results
+          path: ${{env.DOTNET_ROOT}}/ThAmCo.Tests
 
   deploy:
     runs-on: windows-latest
-    needs: build
+    needs: build-and-test
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: Download app artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: .net-app
+
+      - name: Download test artifact from build-and-test job
+        uses: actions/download-artifact@v2
+        with:
+          name: test-results
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -55,3 +66,8 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4CECDC469E8240FCA7D0F046672CA053 }}
           package: .
+
+      - name: Publish test results
+        uses: mike-ward/publish-test-results-action@v2
+        with:
+          test-results-file: '**/testresults.trx'
