@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ThAmCo.Web.Data;
+using ThAmCo.Web.Services;
 
 namespace ThAmCo.Web
 {
@@ -27,8 +28,14 @@ namespace ThAmCo.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<MainContext>(options
+
+            services.AddDbContext<MainDbContext>(options
                 => options.UseSqlite(Configuration.GetConnectionString("DevDbConnection")));
+            services.AddDbContext<InventoryDbContext>(options
+                => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
+
+            services.AddHttpClient<IInventoryService, InventoryService>();
+
             services.AddAuth0WebAppAuthentication(options => {
                 options.Domain = Configuration["Auth0:Domain"]; ;
                 options.ClientId = Configuration["Auth0:ClientId"]; ;

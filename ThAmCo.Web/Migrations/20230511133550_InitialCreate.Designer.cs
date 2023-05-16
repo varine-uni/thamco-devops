@@ -9,7 +9,7 @@ using ThAmCo.Web.Data;
 
 namespace ThAmCo.Web.Migrations
 {
-    [DbContext(typeof(MainContext))]
+    [DbContext(typeof(MainDbContext))]
     [Migration("20230511133550_InitialCreate")]
     partial class InitialCreate
     {
