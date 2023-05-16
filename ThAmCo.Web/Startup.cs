@@ -29,8 +29,6 @@ namespace ThAmCo.Web
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<MainDbContext>(options
-                => options.UseSqlite(Configuration.GetConnectionString("DevDbConnection")));
             services.AddDbContext<InventoryDbContext>(options
                 => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
 

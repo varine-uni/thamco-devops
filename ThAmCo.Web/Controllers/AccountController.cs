@@ -37,7 +37,7 @@ namespace ThAmCo.Web.Controllers
         [Authorize]
         public IActionResult Profile()
         {
-            return View(new UserProfileModel()
+            return View(new UserProfile()
             {
                 Name = User.Identity.Name,
                 EmailAddress = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
