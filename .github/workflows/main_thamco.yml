@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - thamco
+name: Build, Test, and Deploy ASP.Net Core app to Azure Web App - thamco
 
 on:
   push:
@@ -11,7 +11,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
@@ -31,9 +32,29 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  deploy:
+  test:
     runs-on: windows-latest
     needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build and run tests
+        run: dotnet test --configuration Release --no-restore --verbosity normal
+
+  deploy:
+    runs-on: windows-latest
+    needs: [build, test]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -51,4 +72,4 @@ jobs:
           app-name: 'thamco'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4CECDC469E8240FCA7D0F046672CA053 }}
-          package: . 
+          package: .
