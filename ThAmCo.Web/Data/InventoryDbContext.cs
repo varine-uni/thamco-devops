@@ -7,11 +7,6 @@ namespace ThAmCo.Web.Data
     {
         public DbSet<Product> Products { get; set; }
 
-        public InventoryDbContext()
-        {
-
-        }
-
         public InventoryDbContext(DbContextOptions<InventoryDbContext> options) : base(options)
         {
 

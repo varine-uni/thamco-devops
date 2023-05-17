@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThAmCo.Web", "ThAmCo.Web\ThAmCo.Web.csproj", "{8ABBC58F-BD03-43E3-B3FB-7FB9E30564AB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThAmCo.Tests", "InventoryServiceTest\ThAmCo.Tests.csproj", "{46F53209-FB83-4FA9-A70E-C45A1742E874}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThAmCo.Web", "ThAmCo.Web\ThAmCo.Web.csproj", "{8ABBC58F-BD03-43E3-B3FB-7FB9E30564AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{8ABBC58F-BD03-43E3-B3FB-7FB9E30564AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ABBC58F-BD03-43E3-B3FB-7FB9E30564AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ABBC58F-BD03-43E3-B3FB-7FB9E30564AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46F53209-FB83-4FA9-A70E-C45A1742E874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46F53209-FB83-4FA9-A70E-C45A1742E874}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46F53209-FB83-4FA9-A70E-C45A1742E874}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46F53209-FB83-4FA9-A70E-C45A1742E874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
