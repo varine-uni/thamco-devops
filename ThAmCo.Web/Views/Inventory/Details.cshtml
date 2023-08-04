@@ -10,10 +10,11 @@
     @foreach (var product in Model)
     {
         <div class="product-card">
+            <p>ID: @product.Id</p>
             <h4>@product.Name</h4>
             <p>Category: @product.Category</p>
             <p>Price: @product.Price</p>
-            <p>ID: @product.Id</p>
+            <p>Quantity: @product.QuantityAvailable</p>
         </div>
     }
 </div>

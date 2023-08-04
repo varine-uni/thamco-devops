@@ -1,15 +1,11 @@
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ThAmCo.Web.Data;
 using ThAmCo.Web.Services;
 
@@ -25,14 +21,20 @@ namespace ThAmCo.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<MainDbContext>(options
-                => options.UseSqlite(Configuration.GetConnectionString("DevDbConnection")));
-            services.AddDbContext<InventoryDbContext>(options
-                => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
+            if (env.IsDevelopment())
+            {
+                services.AddDbContext<InventoryDbContext>(options
+                                        => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
+            }
+            else
+            {
+                services.AddDbContext<InventoryDbContext>(options
+                                       => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+            }
 
             services.AddHttpClient<IInventoryService, InventoryService>();
 
@@ -40,6 +42,21 @@ namespace ThAmCo.Web
                 options.Domain = Configuration["Auth0:Domain"]; ;
                 options.ClientId = Configuration["Auth0:ClientId"]; ;
             });
+
+            services.AddSingleton<Auth0ManagementApiClient>(provider =>
+            {
+                var auth0Domain = Configuration["Auth0:Domain"];
+                var clientId = Configuration["Auth0:ClientId"];
+                var clientSecret = Configuration["Auth0:ClientSecret"];
+
+                return new Auth0ManagementApiClient(auth0Domain, clientId, clientSecret);
+            });
+
+            services.AddScoped<EmployeeService>();
+
+            services.AddScoped<ManagerService>();
+
+            services.AddScoped<StaffService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +73,7 @@ namespace ThAmCo.Web
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();

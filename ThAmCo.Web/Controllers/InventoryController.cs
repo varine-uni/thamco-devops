@@ -22,5 +22,12 @@ namespace ThAmCo.Web.Controllers
 
             return View(products);
         }
+
+        public IActionResult Search(string searchString)
+        {
+            var searchResults = _inventoryService.SearchItems(searchString);
+
+            return View(searchResults);
+        }
     }
 }

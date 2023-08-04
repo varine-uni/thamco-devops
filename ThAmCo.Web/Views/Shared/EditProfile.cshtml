@@ -1,0 +1,49 @@
+﻿@model UpdateProfileModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<h1>Edit Profile</h1>
+<form id="edit-profile-form">
+    <!-- Include form fields for updating user metadata, e.g., address, phone number -->
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" value="@Model.Address">
+    <br>
+    <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" name="phone" value="@Model.PhoneNumber">
+    <br>
+
+    <button type="button" onclick="updateProfile()">Save Changes</button>
+</form>
+
+@section Scripts {
+    <script>
+        function updateProfile() {
+            const profileData = {
+                address: document.getElementById('address').value,
+                phoneNumber: document.getElementById('phone').value,
+            };
+
+            fetch('/api/userprofile/update-profile', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikczd2xWMFBRblIySXhnNkgyUDNOUCJ9.eyJpc3MiOiJodHRwczovL2Rldi1temNqMzE0c21sbDBzdWJiLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJTOERsTVJZUkpsVHNGYlBhYUFMRk1yUFlJUTAxNXFWdEBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly90aGFtY28uYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaWF0IjoxNjkxMTY5MzgwLCJleHAiOjE2OTEyNTU3ODAsImF6cCI6IlM4RGxNUllSSmxUc0ZiUGFhQUxGTXJQWUlRMDE1cVZ0IiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.dTGi0HGLIP1P3U1PYMjdwoKIyAQMlYuvdoEKggxsYW07bXns2etNWdKMB3LY4TUb5 - HrE5L9a59wwxL_oHxBGhIuz_K5QJ6jmocc1f7CnJ8TsRu2lOduNSef9e3zm - ODd__0nhC32JU_Tc5nU1O0N8b5Q0deZlrD3sYL45Nby1P7WHEq_FaclWvPMb522wV0cxunHOz5YZDaqcPyCqeBJQvys0JzSDGwxKbcNRZk6nsDzJwmI4x8XGAGt1I9PEK72cqAeDnx4dgxqe_LcECg8BaYkYee5ZC_RDwaTxmvBnYhGHqXPa4DbyLypM3pay0eeNS2635dNQLXgVJIio - 8hg" // Add the user's access token here
+                },
+                body: JSON.stringify(profileData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Profile updated successfully!');
+                    } else {
+                        alert('Failed to update profile. Please try again later.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating profile:', error);
+                    alert('An error occurred while updating the profile. Please try again later.');
+                });
+        }
+    </script>
+}

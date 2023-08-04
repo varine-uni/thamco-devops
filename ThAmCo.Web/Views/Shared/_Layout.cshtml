@@ -38,6 +38,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="EditProfile">Edit Profile</a>
+                            </li>
                         }
                         else
                         {
@@ -50,6 +54,10 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <form method="get" action="/Inventory/Search">
+                            <input type="text" name="searchString" placeholder="Search...">
+                            <button type="submit">Search</button>
+                        </form>
                     </ul>
                 </div>
             </div>

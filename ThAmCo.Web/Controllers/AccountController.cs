@@ -7,11 +7,18 @@ using System.Linq;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
 using ThAmCo.Web.Models;
+using Auth0.ManagementApi.Models;
+using ThAmCo.Web.Services;
 
 namespace ThAmCo.Web.Controllers
 {
     public class AccountController : Controller
     {
+        public AccountController()
+        {
+
+        }
+
         public async Task Login(string returnUrl = "/")
         {
             var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
