@@ -21,20 +21,12 @@ namespace ThAmCo.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env)
+        public void ConfigureServices(IServiceCollection services, )
         {
             services.AddControllersWithViews();
 
-            if (env.IsDevelopment())
-            {
-                services.AddDbContext<InventoryDbContext>(options
-                                        => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
-            }
-            else
-            {
-                services.AddDbContext<InventoryDbContext>(options
-                                       => options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
-            }
+            services.AddDbContext<InventoryDbContext>(options
+                => options.UseSqlite(Configuration.GetConnectionString("InventoryDbConnection")));
 
             services.AddHttpClient<IInventoryService, InventoryService>();
 
